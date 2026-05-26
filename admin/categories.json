@@ -1,0 +1,34 @@
+{
+    "categories": [
+        {
+            "key": "image",
+            "name": "Image Tools",
+            "icon": "🖼️"
+        },
+        {
+            "key": "video",
+            "name": "Video Tools",
+            "icon": "🎬"
+        },
+        {
+            "key": "audio",
+            "name": "Audio Tools",
+            "icon": "🎧"
+        },
+        {
+            "key": "motion",
+            "name": "Motion Tools",
+            "icon": "🎛️"
+        },
+        {
+            "key": "3d",
+            "name": "3D Tools",
+            "icon": "🧊"
+        },
+        {
+            "key": "agents",
+            "name": "Agents",
+            "icon": "🤖"
+        }
+    ]
+}

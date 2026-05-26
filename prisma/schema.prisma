@@ -1,0 +1,551 @@
+// ------------------------------------------------------
+// Prisma – Hegay AI Studio – Final Clean Schema (Corrected)
+// ------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------
+// COSMIC IDENTITY SYSTEM
+// ------------------------------------------------------
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  name          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  emailVerified Boolean  @default(false)
+
+  planId   String  @default("free")
+  stripeId String? @unique
+
+  usageMonthly UsageMonthly[]
+
+  profile   CreatorProfile?
+  roles     UserRole[]
+  sessions  Session[]
+  apiKeys   APIKey[]
+  auditLogs AuditLog[]
+
+  creditWallet CreditWallet?
+  tokenHistory TokenTransaction[]
+  rewards      Reward[]
+  ambassador   Ambassador?
+
+  marketplaceItems MarketplaceItem[]
+  subscriptions    UserSubscription[]
+  revenueShares    RevenueShare[]
+  userTier         UserTier?
+
+  media   Media[]
+  threads Thread[]
+  memory  Memory[]
+
+  // ⭐ FIXED: Missing relations
+  musicProjects MusicProject[]
+  voiceClones   VoiceClone[]
+}
+
+model CreatorProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  displayName String?
+  avatarUrl   String?
+  bio         String?
+  location    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       UserRole[]
+  permissions RolePermission[]
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  roles RolePermission[]
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+}
+
+model RolePermission {
+  id           String   @id @default(uuid())
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model APIKey {
+  id         String    @id @default(uuid())
+  userId     String
+  key        String    @unique
+  label      String?
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+}
+
+// ------------------------------------------------------
+// GOVERNANCE SYSTEM
+// ------------------------------------------------------
+
+model CosmicLaw {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       Json
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ExpansionProtocol {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  version   String
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContinuityRecord {
+  id        String   @id @default(uuid())
+  event     String
+  details   Json?
+  createdAt DateTime @default(now())
+}
+
+// ------------------------------------------------------
+// LEGACY + PANTHEON + ETERNAL RECORDS
+// ------------------------------------------------------
+
+model PantheonEntity {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  role      String
+  symbol    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LegacyRecord {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  data        Json?
+  createdAt   DateTime @default(now())
+}
+
+model EternalRecord {
+  id        String   @id @default(uuid())
+  category  String
+  payload   Json
+  createdAt DateTime @default(now())
+}
+
+// ------------------------------------------------------
+// CREATOR ECONOMY ENGINE
+// ------------------------------------------------------
+
+model CreditWallet {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  balance   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model TokenTransaction {
+  id        String   @id @default(uuid())
+  userId    String
+  amount    Int
+  type      String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Reward {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  details   String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Ambassador {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  code      String   @unique
+  referrals Int      @default(0)
+  earnings  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// ------------------------------------------------------
+// MARKETPLACE + SUBSCRIPTIONS + REVENUE + TIERS
+// ------------------------------------------------------
+
+model MarketplaceItem {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  description String?
+  price       Int
+  type        String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model SubscriptionPlan {
+  id                String             @id @default(uuid())
+  name              String             @unique
+  price             Int
+  credits           Int
+  perks             Json?
+  createdAt         DateTime           @default(now())
+  userSubscriptions UserSubscription[]
+}
+
+model UserSubscription {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  planId    String
+  active    Boolean  @default(true)
+  startedAt DateTime @default(now())
+  expiresAt DateTime
+
+  user User             @relation(fields: [userId], references: [id])
+  plan SubscriptionPlan @relation(fields: [planId], references: [id])
+}
+
+model RevenueShare {
+  id        String   @id @default(uuid())
+  userId    String
+  amount    Int
+  source    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Tier {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  minEarnings Int
+  perks       Json?
+  createdAt   DateTime   @default(now())
+  userTiers   UserTier[]
+}
+
+model UserTier {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  tierId    String
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  tier Tier @relation(fields: [tierId], references: [id])
+}
+
+// ------------------------------------------------------
+// USAGE TRACKING — MONTHLY LIMITS
+// ------------------------------------------------------
+
+model UsageMonthly {
+  id          String   @id @default(uuid())
+  userId      String
+  periodStart DateTime
+  imagesUsed  Int      @default(0)
+  videosUsed  Int      @default(0)
+  chatUsed    Int      @default(0)
+  // ⭐ NEW: Canvas usage for Category A Canvas limits
+  canvasUsed  Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, periodStart])
+}
+
+// ------------------------------------------------------
+// MEDIA LIBRARY
+// ------------------------------------------------------
+
+model Media {
+  id        String   @id @default(uuid())
+  userId    String
+  url       String
+  type      String
+  prompt    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+}
+
+// ------------------------------------------------------
+// HEGAY CHAT ENGINE
+// ------------------------------------------------------
+
+model Thread {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  messages Message[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  threadId  String
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+
+  thread Thread @relation(fields: [threadId], references: [id])
+}
+
+// ------------------------------------------------------
+// MEMORY ENGINE
+// ------------------------------------------------------
+
+model Memory {
+  id        String   @id @default(uuid())
+  userId    String
+  key       String
+  content   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, key], name: "userId_key")
+}
+
+// ------------------------------------------------------
+// PRESET ENGINE
+// ------------------------------------------------------
+
+model Preset {
+  id          String   @id @default(uuid())
+  presetId    String   @unique
+  title       String
+  description String?
+  template    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  fields      PresetField[]
+  generations PresetGeneration[]
+}
+
+model PresetField {
+  id           String  @id @default(uuid())
+  presetId     String
+  key          String
+  label        String
+  section      String
+  placeholder  String?
+  defaultValue String?
+
+  preset Preset @relation(fields: [presetId], references: [presetId])
+
+  @@index([presetId])
+}
+
+model PresetGeneration {
+  id        String   @id @default(uuid())
+  presetId  String
+  output    String
+  params    Json
+  createdAt DateTime @default(now())
+
+  preset Preset @relation(fields: [presetId], references: [presetId])
+
+  @@index([presetId])
+}
+
+// ------------------------------------------------------
+// JOB QUEUE
+// ------------------------------------------------------
+
+model Job {
+  id          String    @id @default(uuid())
+  workflowId  String
+  task        String
+  payload     Json
+  status      String    @default("queued")
+  result      Json?
+  error       String?
+  logs        Json?
+  attempts    Int       @default(0)
+  runAt       DateTime?
+  scheduledAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+}
+
+// ------------------------------------------------------
+// SYSTEM EVENTS
+// ------------------------------------------------------
+
+model SystemEvent {
+  id        String   @id @default(uuid())
+  type      String
+  payload   Json
+  createdAt DateTime @default(now())
+}
+
+// ------------------------------------------------------
+// MUSIC ENGINE — FIXED RELATIONS
+// ------------------------------------------------------
+
+model MusicProject {
+  id           String   @id @default(uuid())
+  userId       String
+  title        String
+  language     String
+  genre        String
+  voiceActorId String?
+  lyrics       String?
+  structure    Json?
+  settings     Json?
+  audioUrl     String?
+  stemsUrl     String?
+  videoUrl     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id])
+  voiceActor  VoiceActor?  @relation(fields: [voiceActorId], references: [id])
+  mixSettings MixSettings?
+  videoSync   VideoSync?
+}
+
+model VoiceActor {
+  id        String   @id @default(uuid())
+  name      String
+  language  String
+  gender    String
+  styles    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projects MusicProject[]
+}
+
+model VoiceClone {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  sampleUrl String
+  modelId   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model InstrumentPreset {
+  id        String   @id @default(uuid())
+  name      String
+  genre     String
+  settings  Json
+  createdAt DateTime @default(now())
+}
+
+model MixSettings {
+  id         String   @id @default(uuid())
+  projectId  String   @unique
+  loudness   Int
+  bass       Int
+  brightness Int
+  space      Int
+  presetName String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project MusicProject @relation(fields: [projectId], references: [id])
+}
+
+model VideoSync {
+  id          String   @id @default(uuid())
+  projectId   String   @unique
+  lyricsJson  Json
+  beatMapJson Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  project MusicProject @relation(fields: [projectId], references: [id])
+}

@@ -1,0 +1,94 @@
+{
+    "tools": [
+        {
+            "key": "text_to_image_tool",
+            "name": "Image Generator",
+            "model_key": "text_to_image",
+            "route": "/studio/tools/text_to_image",
+            "icon": "🖼️",
+            "category": "image",
+            "group": "generators"
+        },
+        {
+            "key": "motion_ai_tool",
+            "name": "Motion AI",
+            "model_key": "motion_ai",
+            "route": "/studio/tools/motion_ai",
+            "icon": "🎛️",
+            "category": "motion",
+            "group": "generators"
+        },
+        {
+            "key": "text_to_video_tool",
+            "name": "Video Generator",
+            "model_key": "text_to_video",
+            "route": "/studio/tools/text_to_video",
+            "icon": "🎬",
+            "category": "video",
+            "group": "generators"
+        },
+        {
+            "key": "video_upscaler_tool",
+            "name": "Video Upscaler",
+            "model_key": "video_upscaler",
+            "route": "/studio/tools/video_upscaler",
+            "icon": "📈",
+            "category": "video",
+            "group": "utilities"
+        },
+        {
+            "key": "music_generator_tool",
+            "name": "Music Generator",
+            "model_key": "music_generator_pro",
+            "route": "/studio/tools/music_generator",
+            "icon": "🎧",
+            "category": "audio",
+            "group": "generators"
+        },
+        {
+            "key": "audio_enhancer_tool",
+            "name": "Audio Enhancer",
+            "model_key": "audio_enhancer",
+            "route": "/studio/tools/audio_enhancer",
+            "icon": "🔊",
+            "category": "audio",
+            "group": "utilities"
+        },
+        {
+            "key": "3d_model_generator_tool",
+            "name": "3D Model Generator",
+            "model_key": "3d_model_generator",
+            "route": "/studio/tools/3d_model_generator",
+            "icon": "🧊",
+            "category": "3d",
+            "group": "generators"
+        },
+        {
+            "key": "interior_design_tool",
+            "name": "Interior Designer",
+            "model_key": "interior_design_3d",
+            "route": "/studio/tools/interior_design",
+            "icon": "🏠",
+            "category": "3d",
+            "group": "design"
+        },
+        {
+            "key": "worker_agent_tool",
+            "name": "Worker Agent",
+            "model_key": "worker_agent",
+            "route": "/studio/tools/worker_agent",
+            "icon": "🤖",
+            "category": "agents",
+            "group": "automation"
+        },
+        {
+            "key": "hegay_chat_tool",
+            "name": "Hegay Chat",
+            "model_key": "hegay_chat",
+            "route": "/studio/tools/hegay_chat",
+            "icon": "💬",
+            "category": "agents",
+            "group": "chat"
+        }
+    ]
+}

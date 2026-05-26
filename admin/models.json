@@ -1,0 +1,114 @@
+{
+    "models": [
+        {
+            "key": "text_to_image",
+            "name": "Text to Image",
+            "description": "Generate high‑quality images from text prompts.",
+            "category": "image",
+            "group": "generators",
+            "mode": "image",
+            "endpoint": "/models/text_to_image",
+            "default_tier": "1024px",
+            "icon": "🖼️"
+        },
+        {
+            "key": "motion_ai",
+            "name": "Motion AI",
+            "description": "Generate motion sequences and camera movements.",
+            "category": "motion",
+            "group": "generators",
+            "mode": "motion",
+            "endpoint": "/models/motion_ai",
+            "default_tier": null,
+            "icon": "🎛️"
+        },
+        {
+            "key": "text_to_video",
+            "name": "Text to Video",
+            "description": "Generate short videos from text prompts.",
+            "category": "video",
+            "group": "generators",
+            "mode": "video",
+            "endpoint": "/models/text_to_video",
+            "default_tier": "short",
+            "icon": "🎬"
+        },
+        {
+            "key": "video_upscaler",
+            "name": "Video Upscaler",
+            "description": "Upscale videos to 4K using AI.",
+            "category": "video",
+            "group": "utilities",
+            "mode": "video",
+            "endpoint": "/models/video_upscaler",
+            "default_tier": "4k",
+            "icon": "📈"
+        },
+        {
+            "key": "music_generator_pro",
+            "name": "Music Generator Pro",
+            "description": "Generate music tracks from text prompts.",
+            "category": "audio",
+            "group": "generators",
+            "mode": "audio",
+            "endpoint": "/models/music_generator_pro",
+            "default_tier": "standard",
+            "icon": "🎧"
+        },
+        {
+            "key": "audio_enhancer",
+            "name": "Audio Enhancer",
+            "description": "Enhance audio clarity and remove noise.",
+            "category": "audio",
+            "group": "utilities",
+            "mode": "audio",
+            "endpoint": "/models/audio_enhancer",
+            "default_tier": "pro",
+            "icon": "🔊"
+        },
+        {
+            "key": "3d_model_generator",
+            "name": "3D Model Generator",
+            "description": "Generate 3D objects and meshes from prompts.",
+            "category": "3d",
+            "group": "generators",
+            "mode": "threeD",
+            "endpoint": "/models/3d_model_generator",
+            "default_tier": "standard",
+            "icon": "🧊"
+        },
+        {
+            "key": "interior_design_3d",
+            "name": "Interior Design (3D)",
+            "description": "Generate 3D interior scenes and layouts.",
+            "category": "3d",
+            "group": "design",
+            "mode": "threeD",
+            "endpoint": "/models/interior_design_3d",
+            "default_tier": "room",
+            "icon": "🏠"
+        },
+        {
+            "key": "worker_agent",
+            "name": "Worker Agent",
+            "description": "Run multi‑step pipelines and automation tasks.",
+            "category": "agents",
+            "group": "automation",
+            "mode": "project",
+            "endpoint": "/models/worker_agent",
+            "default_tier": "standard",
+            "icon": "🤖"
+        },
+        {
+            "key": "hegay_chat",
+            "name": "Hegay Chat",
+            "description": "Conversational AI for project assistance.",
+            "category": "agents",
+            "group": "chat",
+            "mode": "project",
+            "endpoint": "/models/hegay_chat",
+            "default_tier": "standard",
+            "icon": "💬"
+        }
+    ]
+}

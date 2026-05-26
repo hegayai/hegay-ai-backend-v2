@@ -1,0 +1,29 @@
+{
+    "groups": [
+        {
+            "key": "generators",
+            "name": "Generators",
+            "icon": "⚡"
+        },
+        {
+            "key": "utilities",
+            "name": "Utilities",
+            "icon": "🛠️"
+        },
+        {
+            "key": "design",
+            "name": "Design Tools",
+            "icon": "🎨"
+        },
+        {
+            "key": "automation",
+            "name": "Automation",
+            "icon": "🤖"
+        },
+        {
+            "key": "chat",
+            "name": "Chat & Assistants",
+            "icon": "💬"
+        }
+    ]
+}

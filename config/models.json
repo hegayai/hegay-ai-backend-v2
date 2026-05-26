@@ -1,0 +1,388 @@
+{
+    "groups": [
+        {
+            "key": "audio_lab",
+            "name": "Audio Lab",
+            "folder": "audio-lab",
+            "models": [
+                {
+                    "key": "tts_basic",
+                    "name": "Text to Speech",
+                    "category": "A",
+                    "credits_cost": 1,
+                    "range": "Up to 1 minute",
+                    "gpu_heavy": false,
+                    "path": "/creative/audio-lab/generate"
+                },
+                {
+                    "key": "speech_to_text",
+                    "name": "Speech to Text",
+                    "category": "A",
+                    "credits_cost": 1,
+                    "range": "Up to 1 minute",
+                    "gpu_heavy": false,
+                    "path": "/creative/audio-lab/generate"
+                },
+                {
+                    "key": "voice_cloning",
+                    "name": "Voice Cloning",
+                    "category": "B",
+                    "credits_cost": 5,
+                    "range": "One cloned voice",
+                    "gpu_heavy": true,
+                    "path": "/creative/audio-lab/enhance"
+                },
+                {
+                    "key": "music_generator_pro",
+                    "name": "Music Generator + Mixing + Mastering",
+                    "category": "B",
+                    "credits_cost": {
+                        "base": 5,
+                        "tiers": {
+                            "60s": 5,
+                            "120s": 8,
+                            "180s": 10
+                        }
+                    },
+                    "range": "Full track with mix & master",
+                    "gpu_heavy": true,
+                    "path": "/creative/audio-lab/generate"
+                },
+                {
+                    "key": "music_video_from_song",
+                    "name": "Music Video from Generated Song",
+                    "category": "B",
+                    "credits_cost": {
+                        "base": 10,
+                        "tiers": {
+                            "10s": 10,
+                            "20s": 20,
+                            "30s": 30
+                        }
+                    },
+                    "range": "Short music video",
+                    "gpu_heavy": true,
+                    "path": "/creative/video-lab/generate"
+                },
+                {
+                    "key": "audio_enhancer",
+                    "name": "Audio Enhancer / Cleaner",
+                    "category": "A",
+                    "credits_cost": 1,
+                    "range": "Up to 5 minutes",
+                    "gpu_heavy": false,
+                    "path": "/creative/audio-lab/enhance"
+                },
+                {
+                    "key": "user_radio_station",
+                    "name": "User 24/7 Radio Station",
+                    "category": "B",
+                    "credits_cost": 20,
+                    "range": "One station setup",
+                    "gpu_heavy": true,
+                    "radio": true,
+                    "path": "/creative/audio-lab/generate"
+                },
+                {
+                    "key": "naijamix_radio_admin",
+                    "name": "NaijaMix Radio (Admin Only)",
+                    "category": "B",
+                    "credits_cost": 0,
+                    "range": "Admin‑controlled",
+                    "gpu_heavy": true,
+                    "radio": true,
+                    "admin_only": true,
+                    "path": "/creative/audio-lab/library"
+                }
+            ]
+        },
+        {
+            "key": "video_lab",
+            "name": "Video Lab",
+            "folder": "video-lab",
+            "models": [
+                {
+                    "key": "text_to_video",
+                    "name": "Text to Video",
+                    "category": "B",
+                    "credits_cost": {
+                        "base": 10,
+                        "tiers": {
+                            "5s": 5,
+                            "10s": 10,
+                            "20s": 20,
+                            "30s": 30
+                        }
+                    },
+                    "range": "AI video generation",
+                    "gpu_heavy": true,
+                    "path": "/creative/video-lab/generate"
+                },
+                {
+                    "key": "image_to_video",
+                    "name": "Image to Video",
+                    "category": "B",
+                    "credits_cost": 8,
+                    "range": "Short motion clip",
+                    "gpu_heavy": true,
+                    "path": "/creative/video-lab/generate"
+                },
+                {
+                    "key": "long_to_short_video",
+                    "name": "Long Video → Short Clips",
+                    "category": "B",
+                    "credits_cost": {
+                        "base": 6,
+                        "tiers": {
+                            "10min": 6,
+                            "20min": 12,
+                            "30min": 18
+                        }
+                    },
+                    "range": "Auto‑cut for creators",
+                    "gpu_heavy": true,
+                    "path": "/creative/video-lab/enhance"
+                },
+                {
+                    "key": "video_watermark_remover",
+                    "name": "Video Watermark Remover",
+                    "category": "B",
+                    "credits_cost": 4,
+                    "range": "One video",
+                    "gpu_heavy": true,
+                    "path": "/creative/video-lab/enhance"
+                },
+                {
+                    "key": "video_upscaler",
+                    "name": "Video Upscaler",
+                    "category": "B",
+                    "credits_cost": 6,
+                    "range": "Up to 30 seconds",
+                    "gpu_heavy": true,
+                    "path": "/creative/video-lab/enhance"
+                }
+            ]
+        },
+        {
+            "key": "image_forge",
+            "name": "Image Forge",
+            "folder": "image-forge",
+            "models": [
+                {
+                    "key": "text_to_image",
+                    "name": "Text to Image",
+                    "category": "B",
+                    "credits_cost": {
+                        "base": 2,
+                        "tiers": {
+                            "512px": 1,
+                            "1024px": 2,
+                            "2048px": 4,
+                            "4k": 6
+                        }
+                    },
+                    "range": "AI image generation",
+                    "gpu_heavy": true,
+                    "path": "/creative/image-forge/generate"
+                },
+                {
+                    "key": "image_edit",
+                    "name": "Image Editing / Inpainting",
+                    "category": "B",
+                    "credits_cost": 2,
+                    "range": "One edit",
+                    "gpu_heavy": true,
+                    "path": "/creative/image-forge/enhance"
+                },
+                {
+                    "key": "image_watermark_remover",
+                    "name": "Image Watermark Remover",
+                    "category": "B",
+                    "credits_cost": 1,
+                    "range": "One image",
+                    "gpu_heavy": true,
+                    "path": "/creative/image-forge/enhance"
+                },
+                {
+                    "key": "graphic_design_flyer",
+                    "name": "Graphic Design – Flyers & Posters",
+                    "category": "B",
+                    "credits_cost": 3,
+                    "range": "One design",
+                    "gpu_heavy": true,
+                    "path": "/creative/canvas/generate"
+                },
+                {
+                    "key": "thumbnail_designer",
+                    "name": "Thumbnail Designer",
+                    "category": "A",
+                    "credits_cost": 1,
+                    "range": "One thumbnail",
+                    "gpu_heavy": false,
+                    "path": "/creative/image-forge/generate"
+                }
+            ]
+        },
+        {
+            "key": "motion_lab",
+            "name": "Motion Lab",
+            "folder": "motion-lab",
+            "models": [
+                {
+                    "key": "motion_ai",
+                    "name": "Motion AI",
+                    "category": "B",
+                    "credits_cost": 10,
+                    "range": "Short motion",
+                    "gpu_heavy": true,
+                    "path": "/creative/motion-lab/generate"
+                },
+                {
+                    "key": "motion_transfer",
+                    "name": "Motion Transfer",
+                    "category": "B",
+                    "credits_cost": 8,
+                    "range": "Apply motion",
+                    "gpu_heavy": true,
+                    "path": "/creative/motion-lab/enhance"
+                },
+                {
+                    "key": "animate_image",
+                    "name": "Animate Image",
+                    "category": "B",
+                    "credits_cost": 6,
+                    "range": "Short animation",
+                    "gpu_heavy": true,
+                    "path": "/creative/motion-lab/generate"
+                }
+            ]
+        },
+        {
+            "key": "reels",
+            "name": "Reels Engine",
+            "folder": "reels",
+            "models": [
+                {
+                    "key": "short_form_video",
+                    "name": "Short‑Form Reels Generator",
+                    "category": "B",
+                    "credits_cost": 8,
+                    "range": "One 9:16 clip",
+                    "gpu_heavy": true,
+                    "path": "/creative/reels/generate"
+                },
+                {
+                    "key": "creator_post_ideas",
+                    "name": "Creator Post Ideas",
+                    "category": "A",
+                    "credits_cost": 1,
+                    "range": "Batch of ideas",
+                    "gpu_heavy": false,
+                    "path": "/creative/reels/generate"
+                },
+                {
+                    "key": "stylish_subtitles",
+                    "name": "Stylish Subtitle Engine",
+                    "category": "A",
+                    "credits_cost": 1,
+                    "range": "One caption job",
+                    "gpu_heavy": false,
+                    "path": "/creative/reels/enhance"
+                }
+            ]
+        },
+        {
+            "key": "canvas_core",
+            "name": "Canvas / Hegay Core",
+            "folder": "canvas",
+            "models": [
+                {
+                    "key": "script_writer",
+                    "name": "Script & Story Writer",
+                    "category": "A",
+                    "credits_cost": 1,
+                    "range": "One script",
+                    "gpu_heavy": false,
+                    "path": "/creative/canvas/generate"
+                },
+                {
+                    "key": "storyboard_generator",
+                    "name": "Storyboard Generator",
+                    "category": "A",
+                    "credits_cost": 2,
+                    "range": "One storyboard",
+                    "gpu_heavy": false,
+                    "path": "/creative/canvas/generate"
+                },
+                {
+                    "key": "hegay_chat",
+                    "name": "Hegay Chat (LLM)",
+                    "category": "A",
+                    "credits_cost": 1,
+                    "range": "Conversation bundle",
+                    "gpu_heavy": false,
+                    "path": "/creative/canvas/hegay-chat"
+                },
+                {
+                    "key": "worker_agent",
+                    "name": "Worker Agent (Automation Pipeline)",
+                    "category": "B",
+                    "credits_cost": {
+                        "base": 12,
+                        "tiers": {
+                            "simple": 12,
+                            "full": 20,
+                            "multi_asset": 30
+                        }
+                    },
+                    "range": "Full pipeline",
+                    "gpu_heavy": true,
+                    "path": "/creative/canvas/tools"
+                }
+            ]
+        },
+        {
+            "key": "3d_lab",
+            "name": "3D Lab",
+            "folder": "3d-lab",
+            "models": [
+                {
+                    "key": "3d_print_generator",
+                    "name": "3D Print Generator",
+                    "category": "B",
+                    "credits_cost": 6,
+                    "range": "One 3D printable model",
+                    "gpu_heavy": true,
+                    "path": "/creative/3d-lab/generate"
+                },
+                {
+                    "key": "3d_model_generator",
+                    "name": "3D Model Generator",
+                    "category": "B",
+                    "credits_cost": 8,
+                    "range": "One 3D model",
+                    "gpu_heavy": true,
+                    "path": "/creative/3d-lab/generate"
+                },
+                {
+                    "key": "product_design",
+                    "name": "Product Design (3D)",
+                    "category": "B",
+                    "credits_cost": 5,
+                    "range": "One product concept",
+                    "gpu_heavy": true,
+                    "path": "/creative/3d-lab/generate"
+                },
+                {
+                    "key": "interior_design",
+                    "name": "Interior Design (3D)",
+                    "category": "B",
+                    "credits_cost": 5,
+                    "range": "One interior scene",
+                    "gpu_heavy": true,
+                    "path": "/creative/3d-lab/generate"
+                }
+            ]
+        }
+    ]
+}
