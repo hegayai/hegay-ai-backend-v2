@@ -16,6 +16,14 @@ def require_auth(f):
         user_id = session.get("user_id")
         if not user_id:
             return jsonify({"error": "Unauthorized"}), 401
+
+        user = User.query.get(user_id)
+        if not user:
+            session.clear()
+            return jsonify({"error": "Unauthorized"}), 401
+
+        # Attach user to request for downstream use
+        request.user = user
         return f(*args, **kwargs)
     return wrapper
 
@@ -32,6 +40,7 @@ def require_role(role):
             if not user or user.role != role:
                 return jsonify({"error": "Forbidden"}), 403
 
+            request.user = user
             return f(*args, **kwargs)
         return wrapper
     return decorator
@@ -99,6 +108,9 @@ def login():
     if not user or not user.check_password(password):
         return jsonify({"error": "Invalid credentials"}), 401
 
+    # ⭐ Make session persistent
+    session.permanent = True
+
     # ⭐ Store session
     session["user_id"] = user.id
     session["role"] = user.role
@@ -128,8 +140,7 @@ def logout():
 @auth.get("/me")
 @require_auth
 def me():
-    user_id = session.get("user_id")
-    user = User.query.get(user_id)
+    user = request.user
 
     return jsonify({
         "id": user.id,

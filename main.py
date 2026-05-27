@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import timedelta, datetime
 
@@ -102,7 +102,7 @@ from routes.server_control import server_control_bp
 # Credits + Stripe Billing
 from routes.credits import credits_bp
 from routes.stripe_billing import stripe_billing_bp
-from routes.stripe_subscriptions import stripe_subscriptions_bp   # ✅ FIXED
+from routes.stripe_subscriptions import stripe_subscriptions_bp
 
 # ------------------------------------------------------------------------------
 # 5. REGISTER BLUEPRINTS
@@ -186,7 +186,49 @@ def log_api_usage(response):
     return response
 
 # ------------------------------------------------------------------------------
-# 7. DATABASE CREATION + ADMIN SEEDING
+# 7. ROOT + HEALTH + STATUS + STRIPE VERIFY ROUTES
+# ------------------------------------------------------------------------------
+
+@app.route("/", methods=["GET"])
+def root():
+    return jsonify({
+        "status": "online",
+        "service": "Hegay AI Backend",
+        "version": "v2",
+        "message": "Backend is running successfully."
+    }), 200
+
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"health": "ok"}), 200
+
+
+@app.route("/status", methods=["GET"])
+def status():
+    return jsonify({
+        "service": "Hegay AI Backend",
+        "environment": os.getenv("FLASK_ENV", "production"),
+        "database_connected": db.session is not None,
+        "stripe_keys_loaded": {
+            "secret_key": bool(os.getenv("STRIPE_SECRET_KEY")),
+            "billing_webhook_secret": bool(os.getenv("STRIPE_WEBHOOK_SECRET")),
+            "subscriptions_webhook_secret": bool(os.getenv("STRIPE_SUBSCRIPTIONS_WEBHOOK_SECRET")),
+        },
+        "uptime": "running"
+    }), 200
+
+
+@app.route("/stripe/verify-secrets", methods=["GET"])
+def verify_stripe_secrets():
+    return jsonify({
+        "STRIPE_SECRET_KEY": bool(os.getenv("STRIPE_SECRET_KEY")),
+        "STRIPE_WEBHOOK_SECRET": os.getenv("STRIPE_WEBHOOK_SECRET"),
+        "STRIPE_SUBSCRIPTIONS_WEBHOOK_SECRET": os.getenv("STRIPE_SUBSCRIPTIONS_WEBHOOK_SECRET"),
+    }), 200
+
+# ------------------------------------------------------------------------------
+# 8. DATABASE CREATION + ADMIN SEEDING
 # ------------------------------------------------------------------------------
 
 with app.app_context():
@@ -195,7 +237,7 @@ with app.app_context():
     seed_admin()
 
 # ------------------------------------------------------------------------------
-# 8. START SERVER
+# 9. START SERVER
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":

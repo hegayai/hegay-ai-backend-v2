@@ -16,8 +16,9 @@ stripe_subscriptions_bp = Blueprint("stripe_subscriptions_bp", __name__)
 # STRIPE CONFIG
 # ---------------------------------------------------------
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-SUBS_WEBHOOK_SECRET = os.getenv("STRIPE_SUBSCRIPTIONS_WEBHOOK_SECRET")
 
+# IMPORTANT: must match Render env var EXACTLY
+SUBS_WEBHOOK_SECRET = os.getenv("STRIPE_SUBSCRIPTIONS_WEBHOOK_SECRET")
 
 # Map internal plan names → Stripe price IDs
 PLAN_PRICE_IDS = {
@@ -57,16 +58,13 @@ def log_billing_event(user_id, category, feature, credits_used, details=None, pl
         created_at=datetime.utcnow(),
     )
     db.session.add(event)
-    db.session.commit()  # ✅ ensure billing events are persisted
+    db.session.commit()
 
 
 # ---------------------------------------------------------
-# APPLY PLAN TO USER (CORE LOGIC)
+# APPLY PLAN TO USER
 # ---------------------------------------------------------
 def apply_plan_to_user(user: User, plan_name: str, stripe_sub_id: str = None):
-    """
-    Syncs User + Subscription + credits with a given plan.
-    """
     if plan_name not in PLANS:
         raise ValueError(f"Unknown plan: {plan_name}")
 
@@ -75,10 +73,10 @@ def apply_plan_to_user(user: User, plan_name: str, stripe_sub_id: str = None):
     # Update user plan
     user.plan = plan_name
 
-    # Monthly credits logic (simple: images count as credits)
+    # Monthly credits
     monthly_credits = plan_cfg.get("images", 0)
 
-    # Reset usage and allocate new credits
+    # Reset usage + allocate credits
     user.credits_total = monthly_credits
     user.credits_used = 0
 
@@ -86,7 +84,7 @@ def apply_plan_to_user(user: User, plan_name: str, stripe_sub_id: str = None):
     now = datetime.utcnow()
     end_date = now + timedelta(days=30)
 
-    # Deactivate existing subscriptions
+    # Deactivate old subs
     Subscription.query.filter_by(user_id=user.id, active=True).update(
         {"active": False}
     )
@@ -101,7 +99,7 @@ def apply_plan_to_user(user: User, plan_name: str, stripe_sub_id: str = None):
     )
     db.session.add(sub)
 
-    # Log billing event for plan change
+    # Log billing event
     log_billing_event(
         user_id=user.id,
         category="subscription",
@@ -135,7 +133,7 @@ def create_subscription_session():
         return jsonify({"error": f"Stripe price not configured for {plan_name}"}), 500
 
     try:
-        # Ensure Stripe customer
+        # Ensure Stripe customer exists
         if not user.stripe_customer_id:
             customer = stripe.Customer.create(
                 email=user.email,
@@ -194,6 +192,7 @@ def subscriptions_webhook():
     payload = request.data
     sig_header = request.headers.get("Stripe-Signature")
 
+    # Verify signature
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, SUBS_WEBHOOK_SECRET
@@ -205,15 +204,15 @@ def subscriptions_webhook():
     event_type = event["type"]
     data_obj = event["data"]["object"]
 
-    # Helper: find user by Stripe customer
+    # Helper: find user by Stripe customer ID
     def get_user_by_customer(customer_id: str):
         if not customer_id:
             return None
         return User.query.filter_by(stripe_customer_id=customer_id).first()
 
-    # -----------------------------
+    # -----------------------------------------------------
     # SUBSCRIPTION CREATED / UPDATED
-    # -----------------------------
+    # -----------------------------------------------------
     if event_type in (
         "customer.subscription.created",
         "customer.subscription.updated",
@@ -227,7 +226,7 @@ def subscriptions_webhook():
         if not user:
             return "", 200
 
-        # Determine plan from price
+        # Determine plan from price ID
         items = sub.get("items", {}).get("data", [])
         plan_name = None
         if items:
@@ -241,9 +240,12 @@ def subscriptions_webhook():
             print("Unknown subscription price, skipping plan sync")
             return "", 200
 
+        # Active subscription
         if status in ("active", "trialing"):
             apply_plan_to_user(user, plan_name, stripe_sub_id=stripe_sub_id)
             db.session.commit()
+
+        # Cancelled or unpaid
         elif status in ("canceled", "unpaid", "incomplete_expired", "past_due"):
             Subscription.query.filter_by(user_id=user.id, active=True).update(
                 {"active": False}
@@ -251,13 +253,13 @@ def subscriptions_webhook():
             user.plan = "Free"
             db.session.commit()
 
-    # -----------------------------
+    # -----------------------------------------------------
     # INVOICE PAYMENT SUCCEEDED
-    # -----------------------------
+    # -----------------------------------------------------
     if event_type == "invoice.payment_succeeded":
         invoice = data_obj
         customer_id = invoice.get("customer")
-        amount_paid = invoice.get("amount_paid")  # in cents
+        amount_paid = invoice.get("amount_paid")
         currency = invoice.get("currency")
         stripe_sub_id = invoice.get("subscription")
 
@@ -293,9 +295,9 @@ def subscriptions_webhook():
 
         db.session.commit()
 
-    # -----------------------------
+    # -----------------------------------------------------
     # SUBSCRIPTION DELETED
-    # -----------------------------
+    # -----------------------------------------------------
     if event_type == "customer.subscription.deleted":
         sub = data_obj
         customer_id = sub.get("customer")
