@@ -9,8 +9,9 @@ import stripe
 
 stripe_billing_bp = Blueprint("stripe_billing_bp", __name__)
 
+# Correct secret for credit‑pack webhook
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+WEBHOOK_SECRET = os.getenv("STRIPE_CREDITS_WEBHOOK_SECRET")
 
 
 # ---------------------------------------------------------
@@ -79,7 +80,7 @@ def create_checkout_session():
 
 
 # ---------------------------------------------------------
-# STRIPE WEBHOOK
+# STRIPE WEBHOOK (CREDIT PACKS)
 # ---------------------------------------------------------
 @stripe_billing_bp.route("/webhook", methods=["POST"])
 def stripe_webhook():

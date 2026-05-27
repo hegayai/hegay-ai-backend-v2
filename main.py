@@ -48,7 +48,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 # ------------------------------------------------------------------------------
-# 4. IMPORT BLUEPRINTS (CLEAN + NO DUPLICATES)
+# 4. IMPORT BLUEPRINTS
 # ------------------------------------------------------------------------------
 
 # Auth + Users
@@ -102,9 +102,10 @@ from routes.server_control import server_control_bp
 # Credits + Stripe Billing
 from routes.credits import credits_bp
 from routes.stripe_billing import stripe_billing_bp
+from routes.stripe_subscriptions import stripe_subscriptions_bp   # ✅ FIXED
 
 # ------------------------------------------------------------------------------
-# 5. REGISTER BLUEPRINTS (NO DUPLICATES)
+# 5. REGISTER BLUEPRINTS
 # ------------------------------------------------------------------------------
 
 # Auth
@@ -157,7 +158,8 @@ app.register_blueprint(server_control_bp, url_prefix="/system")
 
 # Credits + Billing
 app.register_blueprint(credits_bp, url_prefix="/credits")
-app.register_blueprint(stripe_billing_bp, url_prefix="/billing")
+app.register_blueprint(stripe_billing_bp, url_prefix="/api/billing")
+app.register_blueprint(stripe_subscriptions_bp, url_prefix="/api")
 
 # ------------------------------------------------------------------------------
 # 6. API USAGE LOGGING

@@ -12,10 +12,11 @@ import stripe
 
 stripe_subscriptions_bp = Blueprint("stripe_subscriptions_bp", __name__)
 
+# Stripe config
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 SUBS_WEBHOOK_SECRET = os.getenv("STRIPE_SUBSCRIPTIONS_WEBHOOK_SECRET")
 
-# Map internal plan names → Stripe price IDs (set these in env)
+# Map internal plan names → Stripe price IDs
 PLAN_PRICE_IDS = {
     "Starter": os.getenv("STRIPE_PRICE_STARTER"),
     "Creator": os.getenv("STRIPE_PRICE_CREATOR"),
@@ -96,7 +97,7 @@ def apply_plan_to_user(user: User, plan_name: str, stripe_sub_id: str = None):
     )
     db.session.add(sub)
 
-    # Optional: log billing event for plan change
+    # Log billing event for plan change
     log_billing_event(
         user_id=user.id,
         category="subscription",
@@ -240,7 +241,6 @@ def subscriptions_webhook():
             apply_plan_to_user(user, plan_name, stripe_sub_id=stripe_sub_id)
             db.session.commit()
         elif status in ("canceled", "unpaid", "incomplete_expired", "past_due"):
-            # Mark subscriptions inactive, keep user on Free
             Subscription.query.filter_by(user_id=user.id, active=True).update(
                 {"active": False}
             )
@@ -249,7 +249,6 @@ def subscriptions_webhook():
 
     # -----------------------------
     # INVOICE PAYMENT SUCCEEDED
-    # (Good place to log revenue + credit transaction)
     # -----------------------------
     if event_type == "invoice.payment_succeeded":
         invoice = data_obj
@@ -262,10 +261,9 @@ def subscriptions_webhook():
         if not user:
             return "", 200
 
-        # Log credit transaction as subscription payment
         tx = CreditTransaction(
             user_id=user.id,
-            amount=amount_paid,  # store raw amount (cents)
+            amount=amount_paid,
             type="SUBSCRIPTION_PAYMENT",
             meta_data={
                 "stripe_invoice_id": invoice.get("id"),
