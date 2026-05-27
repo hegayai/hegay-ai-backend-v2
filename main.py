@@ -33,7 +33,7 @@ app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 
 app.config["SESSION_COOKIE_NAME"] = "session"
-app.config["SESSION_COOKIE_DOMAIN"] = "localhost"
+app.config["SESSION_COOKIE_DOMAIN"] = None   # ⭐ FIXED: works on Render + local
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
@@ -237,8 +237,9 @@ with app.app_context():
     seed_admin()
 
 # ------------------------------------------------------------------------------
-# 9. START SERVER
+# 9. START SERVER (⭐ FIXED FOR RENDER)
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5050, debug=True)
+    port = int(os.environ.get("PORT", 5050))
+    app.run(host="0.0.0.0", port=port)
