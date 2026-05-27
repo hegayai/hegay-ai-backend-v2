@@ -12,9 +12,12 @@ import stripe
 
 stripe_subscriptions_bp = Blueprint("stripe_subscriptions_bp", __name__)
 
-# Stripe config
+# ---------------------------------------------------------
+# STRIPE CONFIG
+# ---------------------------------------------------------
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 SUBS_WEBHOOK_SECRET = os.getenv("STRIPE_SUBSCRIPTIONS_WEBHOOK_SECRET")
+
 
 # Map internal plan names → Stripe price IDs
 PLAN_PRICE_IDS = {
@@ -54,6 +57,7 @@ def log_billing_event(user_id, category, feature, credits_used, details=None, pl
         created_at=datetime.utcnow(),
     )
     db.session.add(event)
+    db.session.commit()  # ✅ ensure billing events are persisted
 
 
 # ---------------------------------------------------------
